@@ -1,4 +1,6 @@
-const API_TOKEN = "6e0d9b57746f9eb6a31937c692cf7002";
+import { API_KEY } from '@env';
+
+const API_TOKEN = API_KEY;
 
 const getFilmsFromApiWithSearchedText = (text) => {
   const url = 'https://api.themoviedb.org/3/search/movie?api_key=' + API_TOKEN + '&language=fr&query=' + text
