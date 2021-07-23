@@ -1,13 +1,12 @@
-// Components/FilmItem.js
-
 import React from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native';
+import getImageFromApi from '../API/getImageFromApi';
 
 const FilmItem = (props) => {
   const film = props.film;
     return (
       <View style={styles.main_container}>
-        <Image style={styles.movie_image} source={{}} />
+        <Image style={styles.movie_image} source={{uri: getImageFromApi(film.poster_path)}} />
           <View style={styles.content}>
             <View style={styles.header}>
               <Text style={styles.title_text}>{film.title}</Text>
@@ -49,8 +48,7 @@ const styles = StyleSheet.create({
   movie_image: {
     width: 120,
     height: 180,
-    margin: 5,
-    backgroundColor: 'gray'
+    margin: 5
   },
   content: {
     flex: 1,
