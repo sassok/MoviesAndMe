@@ -6,24 +6,30 @@ import getFilmsFromApiWithSearchedText from '../API/TMDBApi';
 const Search = () => {
   const [film, setFilm] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  let wordSearch = '';
-  let page = 0;
-  let totalPages = 0;
+  const [wordSearch, setWordSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  
 
   const LoadFilms = () => {
     if (wordSearch.length > 0) {
-      setIsLoading(true);
-      getFilmsFromApiWithSearchedText(wordSearch, page + 1).then(data => {
-        page = data.page;
-        totalPages = data.total_pages;
-        setFilm([...film, ...data.results]);
+      setIsLoading(true)
+      console.log(page)
+      getFilmsFromApiWithSearchedText(wordSearch, page).then(data => {
+        setPage(data.page + 1);
+        setTotalPages(data.total_pages);
+        setFilm([ ...film, ...data.results ]);
         setIsLoading(false);
       })
     }
   }
 
-  const SearchTextInputChanged = (text) => {
-    wordSearch = text;
+  const SearchFilms = () => {
+    setFilm([]);
+    setPage(0);
+    setTotalPages(0);
+    console.log("Page : " + page + " / TotalPages : " + totalPages + " / Nombre de films : " + film.length)
+    LoadFilms()
   }
 
   const DisplayLoading = () => {
@@ -32,7 +38,7 @@ const Search = () => {
         <View style={styles.loading_container}>
             <ActivityIndicator size='large' />
         </View>
-      )
+      );
     }
   }
   return (
@@ -40,17 +46,17 @@ const Search = () => {
       <TextInput 
         style={styles.textinput} 
         placeholder="Titre du film"
-        onChangeText={(text) => SearchTextInputChanged(text)}
-        onSubmitEditing={() => LoadFilms()}/>
-      <Button title="Search" onPress={() => {LoadFilms()}}/>
-      <FlatList
+        onChangeText={(text) => setWordSearch(text)}
+        onSubmitEditing={() => SearchFilms()}/>
+      <Button title="Search" onPress={() => SearchFilms()}/>
+      <FlatList style={styles.FlatList}
           data={film}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({item}) => <FilmItem film={item}/>}
           onEndReachedThreshold={0.5}
           onEndReached={() => {
             if (page < totalPages) {
-            LoadFilms()
+              LoadFilms();
             }
           }}
       />
@@ -80,6 +86,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  FlatList: {
+    flex: 1
   }
 })
 
